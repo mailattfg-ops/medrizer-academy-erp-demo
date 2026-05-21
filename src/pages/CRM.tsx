@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Search, Plus, Phone, MessageCircle, FileText, 
-  Eye, Download, ShieldAlert, Clock
+  Eye, Download, ShieldAlert, Clock, Sparkles, Bot
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { mockLeads } from '../MockData';
@@ -299,6 +299,48 @@ const CRM: React.FC = () => {
                       )}
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div className="profile-section">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="flex items-center gap-2 text-[var(--primary)] m-0"><Sparkles size={16} /> AI Lead Intelligence</h4>
+                  <div className="flex items-center gap-2 text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span> Auto-Pilot Active
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-[rgba(0,119,182,0.05)] border border-[var(--primary-light)] rounded-lg mb-3">
+                  <div className="flex justify-between items-end mb-2">
+                    <span className="text-sm font-semibold">Conversion Probability</span>
+                    <span className="text-lg font-bold text-success">
+                      {selectedLead.stage === 'Successfully Reached Abroad' ? '100%' : 
+                       selectedLead.stage === 'Visa Processing' ? '92%' : 
+                       selectedLead.stage === 'OET Training' ? '75%' : 
+                       selectedLead.stage === 'Interested' ? '68%' : '35%'}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-success h-1.5 rounded-full" style={{ width: 
+                      selectedLead.stage === 'Successfully Reached Abroad' ? '100%' : 
+                      selectedLead.stage === 'Visa Processing' ? '92%' : 
+                      selectedLead.stage === 'OET Training' ? '75%' : 
+                      selectedLead.stage === 'Interested' ? '68%' : '35%'
+                    }}></div>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-[rgba(255,193,7,0.1)] border border-[var(--warning)] rounded-lg">
+                  <h5 className="flex items-center gap-1 text-sm font-semibold mb-1 text-[var(--warning)]"><Bot size={14}/> AI Suggested Action:</h5>
+                  <p className="text-xs text-muted leading-relaxed">
+                    {selectedLead.stage === 'New Enquiry' ? 'High intent detected from Meta Ads. AI recommends an immediate introductory WhatsApp call.' :
+                     selectedLead.stage === 'Interested' ? `Student prefers ${selectedLead.countryPreference[0]}. AI suggests sending the OET brochure for nurses.` :
+                     selectedLead.stage === 'OET Training' ? 'Monitor attendance closely. AI predicts readiness for exam in 2 weeks.' :
+                     'Follow standard protocol. AI is monitoring document expiration dates automatically.'}
+                  </p>
+                  <button className="btn btn-primary w-full mt-2 text-xs py-1.5 flex items-center justify-center gap-1">
+                    <Sparkles size={12}/> Auto-Execute Action
+                  </button>
                 </div>
               </div>
 
