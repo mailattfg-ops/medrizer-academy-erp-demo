@@ -11,6 +11,7 @@ import './CRM.css';
 
 const CRM: React.FC = () => {
   const { user } = useAuth();
+  const [leadsData, setLeadsData] = useState(mockLeads);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStage, setSelectedStage] = useState('All');
   const [selectedCountry, setSelectedCountry] = useState('All');
@@ -22,7 +23,7 @@ const CRM: React.FC = () => {
 
   // Filter based on role and branch
   const filteredLeads = useMemo(() => {
-    let leads = mockLeads;
+    let leads = [...leadsData];
     
     // Role based filtering
     if (user?.role === 'Branch Admin') {
@@ -55,7 +56,7 @@ const CRM: React.FC = () => {
     }
     
     return leads;
-  }, [searchTerm, selectedStage, selectedCountry, selectedSource, user]);
+  }, [searchTerm, selectedStage, selectedCountry, selectedSource, user, leadsData]);
 
   const maskSensitiveInfo = (info: string, type: 'phone' | 'email') => {
     if (user?.role === 'Super Admin' || user?.role === 'Branch Admin' || user?.role === 'Senior Staff') return info;
@@ -83,6 +84,27 @@ const CRM: React.FC = () => {
     e.preventDefault();
     setIsModalOpen(false);
     alert('New Lead Successfully Created in CRM!');
+  };
+
+  const handleContactAction = (actionType: string) => {
+    if (!selectedLead) return;
+    
+    alert(`Initiating ${actionType} communication via Enterprise API...`);
+    
+    if (selectedLead.stage === 'New Enquiry') {
+      const updatedLeads = leadsData.map(l => {
+        if (l.id === selectedLead.id) {
+          return { ...l, stage: 'Contacted' as any };
+        }
+        return l;
+      });
+      setLeadsData(updatedLeads);
+      setSelectedLead({ ...selectedLead, stage: 'Contacted' as any });
+      
+      setTimeout(() => {
+        alert("AI Automation: Lead status automatically updated from 'New Enquiry' to 'Contacted'.");
+      }, 500);
+    }
   };
 
   return (
@@ -223,13 +245,13 @@ const CRM: React.FC = () => {
               </div>
 
               <div className="quick-actions">
-                <button className="btn btn-outline quick-btn" title="Call">
+                <button className="btn btn-outline quick-btn" title="Call" onClick={() => handleContactAction('Phone Call')}>
                   <Phone size={16} /> Call
                 </button>
-                <button className="btn btn-teal quick-btn" title="WhatsApp">
+                <button className="btn btn-teal quick-btn" title="WhatsApp" onClick={() => handleContactAction('WhatsApp Message')}>
                   <MessageCircle size={16} /> WhatsApp
                 </button>
-                <button className="btn btn-outline quick-btn" title="Email">
+                <button className="btn btn-outline quick-btn" title="Email" onClick={() => handleContactAction('Email')}>
                   @ Email
                 </button>
               </div>
